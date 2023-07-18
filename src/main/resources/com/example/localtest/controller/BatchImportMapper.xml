@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.localtest.controller.BatchImportMapper">
+        <insert id="circulateImport" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" separator=";">
+            INSERT INTO `user` (
+                `username`,
+                `address`,
+                `password`
+            )
+            VALUES
+            (
+                #{item.userName},
+                #{item.address},
+                #{item.password}
+            )
+        </foreach>
+    </insert>
+
+    <insert id="batchImport">
+        insert into user (username,address,password) values (#{userName},#{address},#{password})
+    </insert>
+
+    <delete id="deleteAll">
+        delete from user;
+    </delete>
+</mapper>
