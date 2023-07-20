@@ -2,6 +2,7 @@ package com.example.localtest.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -25,4 +26,10 @@ public class BatchImport {
     public void delete(){
         batchImportService.delete();
     }
+    @RequestMapping("/transactionTest")
+    public void transactionTest(){
+
+        batchImportService.transactionTest();
+    }
+
 }

@@ -4,6 +4,7 @@ import org.apache.ibatis.session.ExecutorType;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import javax.annotation.Resource;
@@ -30,10 +31,12 @@ public class MybatisBatchUtils {
     */
     public  <T,U,R> int batchUpdateOrInsert(List<T> data, Class<U> mapperClass, BiFunction<T,U,R> function) {
         int i = 1;
-        SqlSession batchSqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH, false);
+        SqlSession batchSqlSession = sqlSessionFactory.openSession(ExecutorType.BATCH);
+        System.out.println("batchSqlSession:"+batchSqlSession);
         try {
             U mapper = batchSqlSession.getMapper(mapperClass);
             int size = data.size();
+
             for (T element : data) {
                 function.apply(element,mapper);
                 if ((i % BATCH_SIZE == 0) || i == size) {
@@ -47,6 +50,7 @@ public class MybatisBatchUtils {
             //非事务环境下正常回滚并且抛出异常，事务环境下内部回滚上报异常，外围事务捕获后触发全局回滚
             batchSqlSession.rollback();
             throw new RuntimeException(e);
+            //TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         } finally {
             batchSqlSession.close();
         }

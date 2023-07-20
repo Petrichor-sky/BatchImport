@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -105,5 +106,25 @@ public class BatchImportService {
 
     public void delete() {
         batchImportMapper.deleteAll();
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    public void transactionTest() {
+        List<User> users = new ArrayList<>();
+        for (int i = 0; i < 20000; i++) {
+            User u = new User();
+            u.setAddress("广州：" + i);
+            u.setUserName("张三：" + i);
+            u.setPassword("123：" + i);
+
+            users.add(u);
+        }
+
+        mybatisBatchUtils.batchUpdateOrInsert(users, BatchImportMapper.class, (user, mapper) -> {
+            mapper.batchImport(user);
+            return null;
+        });
+
+        batchImportMapper.batchImport(new User("徐凡","haha"," hah "));
     }
 }
