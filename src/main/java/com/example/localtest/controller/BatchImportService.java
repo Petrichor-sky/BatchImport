@@ -15,7 +15,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
+
 
 @Service
 public class BatchImportService {
@@ -48,10 +48,12 @@ public class BatchImportService {
         mybatisBatchUtils.batchUpdateOrInsert(users, BatchImportMapper.class, (user, mapper) -> {
             mapper.batchImport(user);
             return null;
+
         });
 
         long endTime = System.currentTimeMillis();
         logger.info("batch模式 耗费时间 {}", (endTime - startTime));
+
     }
 
     @Transactional(rollbackFor = Exception.class)

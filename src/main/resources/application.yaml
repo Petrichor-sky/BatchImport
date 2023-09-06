@@ -1,0 +1,9 @@
+spring:
+  redis:
+    client-name: ali
+    host: 106.14.206.6
+    port: 6379
+    password: redis
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
